@@ -9,5 +9,4 @@
         return $data;
     }
     
-    // echo getplaintextintrofromhtml('https://us.jooble.org/desc/-6670628439966473607?ckey=web+development&rgn=6974&pos=19&elckey=1511354777311894974&aq=17323661&age=114&relb=100&brelb=100&bscr=306,56226&scr=306,56226');
 ?>
