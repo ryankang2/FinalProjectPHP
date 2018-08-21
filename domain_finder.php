@@ -1,6 +1,31 @@
 <?php
-    curl 'https://company.clearbit.com/v1/domains/find' 
-    -u sk_b504931a3d3c61d5979227e102831b4b:
+    function getCompanySite($name){
+        $curl = curl_init();
+        $name = urlencode($name);
 
-    $ch = curl_init();
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://company.clearbit.com/v1/domains/find?name=$name",
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => "",
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => "GET",
+        CURLOPT_HTTPHEADER => array(
+            "Authorization: Basic c2tfYjUwNDkzMWEzZDNjNjFkNTk3OTIyN2UxMDI4MzFiNGI6",
+            "Cache-Control: no-cache",
+            "Postman-Token: c6c737af-6223-4c2d-be11-d2294792c60a"
+        ),
+        ));
+    
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+    
+        curl_close($curl);
+
+        $response = json_decode($response);
+        return $response->domain;
+    }
+
+
 ?>
