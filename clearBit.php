@@ -1,11 +1,13 @@
 <?php
 
 function getDomain($company_name){
-    echo $company_name;
+    $arr = explode(' ', trim($company_name));
+    $revisedCompanyName = $arr[0];
+    
     print_r("<br>");
     $curl = curl_init();
     curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://company.clearbit.com/v1/domains/find?name=$company_name",
+      CURLOPT_URL => "https://company.clearbit.com/v1/domains/find?name=:".$revisedCompanyName."&key=sk_b504931a3d3c61d5979227e102831b4b",
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -21,30 +23,27 @@ function getDomain($company_name){
     
     $response = curl_exec($curl);
     $err = curl_error($curl);
-    
+
     curl_close($curl);
     
-    
-    $decoded_response =  json_decode($response);
-    // print_r($decoded_response);
-    // return $decoded_response->domain;
+    $decoded_response = json_decode($response, true);
+   
 
-    if(isset($decoded_response ->domain)){
-        return $decoded_response->domain;
-    } else {
-        print_r($decoded_response);
-        print("<br>");
-    }
-    
+    return $decoded_response["domain"];
+
+
+
+    // print_r('after decode:', $assoc);
+
+    // print($assoc[0])
+   
     // if ($err) {
-    //   echo "cURL Error #:" . $err;
+    //     echo "cURL Error #:" . $err;
     // } else {
-    //     $server_output = json_decode($response);
-    //     if($server_output ->domain){
-    //         echo $server_output->domain;
-    //     }
-        
+    //     echo $response;
     // }
+        
+
 
 
 
