@@ -1,7 +1,7 @@
 <?php
 require_once("mysql_connect.php");
 require_once("jooble_scrape.php");
-require_once("domain_finder.php");
+require_once("clearBit.php");
 include("simple_html_dom.php");
 $url = "https://us.jooble.org/api/";
 // $key = "3fb7e81e-bb94-45d0-af8f-0df47f82bc31";
@@ -30,35 +30,42 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
     $link = getListingURL($server_output->jobs[$i]);
     $type = (INT)getJobType($server_output->jobs[$i]);
     $description = addslashes(getplaintextintrofromhtml($link));
-    $company_name = $server_output->jobs[$i]->company;
-    $title_company = "$title"."-"."$company_name";
-    $company_site = getCompanySite($company_name);
-    $company_site = ($company_site==NULL) ? urlencode($company_name).".com":$company_site;
+    $companyName = $server_output->jobs[$i]->company;
+    $titleCompany = "$title"."-"."$companyName";
+    $companySite = getCompanySite($companyName);
+    //check if company site is invalid, if so, give it a .com concat
+    $companySite = ($companySite==NULL) ? ($companyName).".com":$companySite;
+    $clearBitObj = getClearBitObj($companySite);
+
     //fill up companies table
-    $checkDuplicateCompany = "SELECT `name` FROM `companies` WHERE `name`='$company_name'";
+    $checkDuplicateCompany = "SELECT `name` FROM `companies` WHERE `name`='$companyName'";
     mysqli_query($conn, $checkDuplicateCompany);
     if(mysqli_affected_rows($conn) == 0){
-        $revisedCompanyName = str_replace(" ", "-", $company_name);
-        $linkedin_url = "https://www.linkedin.com/company/".$revisedCompanyName."/";
-        $ocr_url = "https://www.ocregister.com/?s=$company_name&orderby=date&order=desc";
+        $revisedCompanyName = str_replace(" ", "-", $companyName);
+        // $linkedin_url = "https://www.linkedin.com/company/".$revisedCompanyName."/";
+        $linkedin_url = "https://www.linkedin.com/".$clearBitObj["linkedin"]["handle"];
+        $ocr_url = "https://www.ocregister.com/?s=$companyName&orderby=date&order=desc";
         $query = "INSERT INTO `companies`(`name`, `location_id`, `company_website`, `linkedin_url`, `ocr_url`) 
-        VALUES ('$company_name', 1, '$company_site', '$linkedin_url', '$ocr_url')";
+        VALUES ('$companyName', 1, '$companySite', '$linkedin_url', '$ocr_url')";
         $result = mysqli_query($conn, $query);
         if(!$result){
             $output["errors"][] = "failed to query company";
         }
     }
     //fill up jobs table
-    $checkDuplicateJobs = "SELECT `title_comp` FROM `jobs` WHERE `title_comp`='$title_company'";
+    $checkDuplicateJobs = "SELECT `title_comp` FROM `jobs` WHERE `title_comp`='$titleCompany'";
     mysqli_query($conn, $checkDuplicateJobs);
     if(mysqli_affected_rows($conn) == 0){
-        $companyIDQuery = "SELECT c.ID FROM companies AS c WHERE c.name = '$company_name'";
+        //match up jobs.company_id to companies.ID in mysql
+        $companyIDQuery = "SELECT c.ID FROM companies AS c WHERE c.name = '$companyName'";
         $result = mysqli_query($conn, $companyIDQuery);
         $row = mysqli_fetch_assoc($result);
         $company_id = $row["ID"];
         
+
+
         $query = "INSERT INTO `jobs`(`title`, `company_name`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `title_comp`) 
-        VALUES ('$title', '$company_name', $company_id, '$description', '$postDate', '$link', $type, '$title_company')";
+        VALUES ('$title', '$companyName', $company_id, '$description', '$postDate', '$link', $type, '$titleCompany')";
         echo $query;
         //send the query to the database, store the result of the query into $result
         $result = mysqli_query($conn, $query);
@@ -66,7 +73,7 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
            $output["errors"][] = "failed to query jobs"; 
         }
     }
-
+    break;
 }
 
 
