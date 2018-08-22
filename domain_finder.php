@@ -1,6 +1,8 @@
 <?php
     function getCompanySite($name){
         $curl = curl_init();
+        // $arr = explode(' ', trim($name));
+        // $name = $arr[0];
         $name = urlencode($name);
 
         curl_setopt_array($curl, array(
@@ -22,9 +24,10 @@
         $err = curl_error($curl);
     
         curl_close($curl);
+        $response_decoded = json_decode($response, true);
+        print_r($response_decoded);
 
-        $response = json_decode($response);
-        return $response->domain;
+        return $response_decoded["domain"];
     }
 
 

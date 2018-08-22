@@ -12,7 +12,7 @@ $ch = curl_init();
 header('Content-Type: application/json');
 curl_setopt($ch, CURLOPT_URL, $url."".$key);
 curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "keywords": "javascript", "location": "Irvine", "radius":"25", "page": 1}');
+curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "keywords": "software", "location": "Irvine", "radius":"25", "page": 2}');
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 // receive server response ...
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -29,13 +29,17 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
     $postDate = getPostDate($server_output->jobs[$i]->updated);
     $link = getListingURL($server_output->jobs[$i]);
     $type = (INT)getJobType($server_output->jobs[$i]);
-    $description = (getplaintextintrofromhtml($link));
-    $company_name = ($server_output->jobs[$i]->company);
-    $company_site = (getCompanySite($company_name)==NULL) ? "$company_name"."com":getCompanySite($company_name);
+    $description = addslashes(getplaintextintrofromhtml($link));
+    $company_name = $server_output->jobs[$i]->company;
+    $title_company = "$title"."-"."$company_name";
+    $company_site = getCompanySite($company_name);
+    $company_site = ($company_site==NULL) ? urlencode($company_name).".com":$company_site;
+    //fill up companies table
     $checkDuplicateCompany = "SELECT `name` FROM `companies` WHERE `name`='$company_name'";
     mysqli_query($conn, $checkDuplicateCompany);
     if(mysqli_affected_rows($conn) == 0){
-        $linkedin_url = "https://www.linkedin.com/company/".$company_name."/";
+        $revisedCompanyName = str_replace(" ", "-", $company_name);
+        $linkedin_url = "https://www.linkedin.com/company/".$revisedCompanyName."/";
         $ocr_url = "https://www.ocregister.com/?s=$company_name&orderby=date&order=desc";
         $query = "INSERT INTO `companies`(`name`, `location_id`, `company_website`, `linkedin_url`, `ocr_url`) 
         VALUES ('$company_name', 1, '$company_site', '$linkedin_url', '$ocr_url')";
@@ -43,35 +47,26 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
         if(!$result){
             $output["errors"][] = "failed to query company";
         }
-        $company_id = mysqli_insert_id($conn);
     }
-    $checkDuplicateJobs = "SELECT `title` FROM `jobs` WHERE `title`='$title'";
+    //fill up jobs table
+    $checkDuplicateJobs = "SELECT `title_comp` FROM `jobs` WHERE `title_comp`='$title_company'";
     mysqli_query($conn, $checkDuplicateJobs);
     if(mysqli_affected_rows($conn) == 0){
-
-        print($company_id);
-        $query = "INSERT INTO `jobs`(`title`, `company_name`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`) 
-        VALUES ('$title', '$company_name', $company_id, '$description', '$postDate', '$link', $type)";
+        $companyIDQuery = "SELECT c.ID FROM companies AS c WHERE c.name = '$company_name'";
+        $result = mysqli_query($conn, $companyIDQuery);
+        $row = mysqli_fetch_assoc($result);
+        $company_id = $row["ID"];
+        
+        $query = "INSERT INTO `jobs`(`title`, `company_name`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `title_comp`) 
+        VALUES ('$title', '$company_name', $company_id, '$description', '$postDate', '$link', $type, '$title_company')";
+        echo $query;
         //send the query to the database, store the result of the query into $result
         $result = mysqli_query($conn, $query);
         if(!$result){
-           $output["errors"][] = "failed to query"; 
+           $output["errors"][] = "failed to query jobs"; 
         }
-
-        //ERROR with company_id...need to check for duplicate company_ids.
-
-
-
-        // $companyIDQuery = "SELECT c.ID FROM companies AS c JOIN jobs on c.name = jobs.company_name";
-        // $result = mysqli_fetch_assoc(mysqli_query($conn, $companyIDQuery));
-        // $company_id = $result["ID"];
-        // $query = "UPDATE jobs SET jobs.company_id=$company_id";
-        // $result = mysqli_query($conn, $query);
-        // if(!$result){
-        //     $output["errors"][] = "failed to update"; 
-        // }
     }
-    break;
+
 }
 
 
@@ -113,7 +108,7 @@ function getJobType($job){
 //returns post date
 function getPostDate($date){
     $microTime = strtotime($date);
-    return date('Y-m-d H:i:s', $microTime);
+    return date("m/d/Y", $microTime);
 }
 //return job title (job title, company name)
 function getJobTitle($job){
