@@ -62,11 +62,12 @@ function getClearbitObj($company_website){
   ));
   
   $response = curl_exec($curl);
-  print('@@ Clearbit object response: '.$response);
+ 
+  // print('@@ Clearbit object response: '.$response);
   $err = curl_error($curl);
   
   curl_close($curl);
-  
+  return json_decode($response, true);
  
 }
 
