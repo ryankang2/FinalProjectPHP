@@ -1,11 +1,11 @@
 <?php
 
-function getAddress($query){
+function getAddress($address_query){
     // $company_name = urlencode($company_name);
     $curl = curl_init();
-
+    $address_query = urlencode($address_query);
     curl_setopt_array($curl, array(
-      CURLOPT_URL => "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=AIzaSyAPvkDMnqCIkBzZRFX93Bccj5sF4YJa8F8",
+      CURLOPT_URL => "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$address_query&key=AIzaSyAPvkDMnqCIkBzZRFX93Bccj5sF4YJa8F8",
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_ENCODING => "",
       CURLOPT_MAXREDIRS => 10,
@@ -19,12 +19,24 @@ function getAddress($query){
     ));
     
     $response = curl_exec($curl);
+    // print('@@@@ json response'.$response);
     $err = curl_error($curl);
     curl_close($curl);
+   
+    $response = json_decode($response, true);
+    // print_r($response);
     
-    print($response);
-    // print_r($decoded_response);
+    if(isset($response["results"][0])=== true){
+       $formatted_address= $response["results"][0]["formatted_address"];
+       return $formatted_address;
+    }
+    else{
+        return NULL;
+    }
     
+
+
+  
 }
 getAddress('LearningFuze Irvine');
 

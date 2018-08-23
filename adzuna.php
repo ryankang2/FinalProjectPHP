@@ -2,9 +2,10 @@
     require_once('mysql_connect.php');
     require_once('clearBit.php');
     require_once('scraped_description.php');
+    require_once('googlePlace.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=10&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=1&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
     header('Content-Type: application/json'); // specify data type
@@ -23,16 +24,22 @@
     for($i = 0;  $i < count((array)$server_output -> results); $i++){
         // variables for JOBS table
         $currentResultIndex = $server_output->results[$i];
+        $company_name = $currentResultIndex->company->display_name;
         $listing_title = getJobTitle($currentResultIndex);
+        $title = $listing_title.','.$company_name;
+        $title_name = $listing_title.'-'.$company_name;
         $post_date    = getPostDate($currentResultIndex->created);
         $listing_url  = getListingURL($currentResultIndex);
         $type_id = getJobType($currentResultIndex);
-        $company_name = $currentResultIndex->company->display_name;
-        $title = $listing_title.','.$company_name;
-        $title_name = $listing_title.'-'.$company_name;
+        
+        $urlEncodedName= encodedName($company_name);
+        // print('@@@@URL ENCODED '.$urlEncodedName);
+        
         $description = scrapeDescription($listing_url);
-       
-         
+        $city = $currentResultIndex-> location->area[3];
+        $address_query = $urlEncodedName." ".$city;
+        $full_street_address = getAddress($address_query);
+        print('@@@FULL ADDRESSS'.$full_street_address);
             
         // print_r("
         // -=- Loop Entry $i -=-
@@ -52,7 +59,7 @@
         $company_website = getDomain($company_name);    
         $clearbitObject = getClearbitObj($company_website);
         $linkedin_url= "www.linkedin.com/".$clearbitObject["linkedin"]["handle"];
-        print_r($clearbitObject);
+        // print_r($clearbitObject);
         
 //logo:
         if(is_null( $clearbitObject["logo"])=== false){
@@ -77,7 +84,9 @@
         if(mysqli_num_rows($companyQueryResult) === 0){
             $query2 = "INSERT INTO `companies` (`name`, `company_website`, `linkedIn_url`, `ocr_url`, `logo`,`crunchbase`) VALUES ('$company_name', '$company_website', '$linkedin_url','$ocr_url', '$logo', '$crunchbase')";
             $result2 = mysqli_query($conn, $query2);
+        // add locations query
         }
+
 
 // write query to select titles that are repeated
         $checkJobExistance = "SELECT * FROM `jobs` WHERE `title_name` = '$title_name'";
@@ -101,6 +110,13 @@
             }
     }
 //----------------------------------------------------------------------------------------------------------------------------//
+    function encodeName($company_name){
+        $company_name = strtolower($company_name);
+        $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
+        return urlencode($company_name);
+    };
+
+
     function getPostDate($date){
         $microtime = strtotime($date);
         return date('m/d/Y',$microtime);  

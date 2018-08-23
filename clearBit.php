@@ -6,9 +6,9 @@ function getDomain($company_name){
     // $revisedCompanyName = $arr[0];
     $company_name = strtolower($company_name);
     $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
-   $company_name = urlencode($company_name);
+    $company_name = urlencode($company_name);
 
-    print('@@@url encode company name: '.$company_name);
+    // print('@@@url encode company name: '.$company_name);
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
