@@ -32,14 +32,27 @@
         $listing_url  = getListingURL($currentResultIndex);
         $type_id = getJobType($currentResultIndex);
         
-        $urlEncodedName= encodedName($company_name);
+        $urlEncodedName= encodeName($company_name);
         // print('@@@@URL ENCODED '.$urlEncodedName);
         
         $description = scrapeDescription($listing_url);
         $city = $currentResultIndex-> location->area[3];
         $address_query = $urlEncodedName." ".$city;
-        $full_street_address = getAddress($address_query);
-        print('@@@FULL ADDRESSS'.$full_street_address);
+        
+        $addressObject = getAddress($address_query);
+            $fullAddress = $addressObject["fullAddress"];
+            $lat = $addressObject["lat"];
+            $long = $addressObject["long"];
+            $street = $addressObject["street"];
+            $city = $addressObject["city"];
+            $state = $addressObject["state"];
+            $zip = $addressObject["zip"];
+       
+        
+
+        
+
+       
             
         // print_r("
         // -=- Loop Entry $i -=-
@@ -85,6 +98,9 @@
             $query2 = "INSERT INTO `companies` (`name`, `company_website`, `linkedIn_url`, `ocr_url`, `logo`,`crunchbase`) VALUES ('$company_name', '$company_website', '$linkedin_url','$ocr_url', '$logo', '$crunchbase')";
             $result2 = mysqli_query($conn, $query2);
         // add locations query
+            $company_id = mysqli_insert_id($conn);
+            $location_query = "INSERT INTO `locations`(`id`, `street`,`city`,`state`,`lat`,`lng`,`full_address`)) VALUES
+            ('$company_id', '$street','$city','$state','$lat','$long','$fullAddress')";
         }
 
 
@@ -110,6 +126,8 @@
             }
     }
 //----------------------------------------------------------------------------------------------------------------------------//
+    
+
     function encodeName($company_name){
         $company_name = strtolower($company_name);
         $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);

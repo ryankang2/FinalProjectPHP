@@ -1,6 +1,7 @@
 <?php
 
 function getAddress($address_query){
+    $output = [];
     // $company_name = urlencode($company_name);
     $curl = curl_init();
     $address_query = urlencode($address_query);
@@ -27,18 +28,38 @@ function getAddress($address_query){
     // print_r($response);
     
     if(isset($response["results"][0])=== true){
-       $formatted_address= $response["results"][0]["formatted_address"];
-       return $formatted_address;
+        $formatted_address= $response["results"][0]["formatted_address"];
+        
+        list($street, $city, $statezip) = explode(", ",$formatted_address);
+        list($state, $zip) = explode(" ", $statezip);
+        
+        $lat = $response["results"][0]["geometry"]["location"]["lat"];
+        $long = $response["results"][0]["geometry"]["location"]["lng"];
+
+        $output["fullAddress"] = $formatted_address;
+        $output["lat"]= $lat;
+        $output["long"]= $long;
+        $output["street"]= $street;
+        $output["city"]= $city;
+        $output["state"]= $state;
+        $output["zip"]= $zip;
+        
+        return $output;
+    //    print_r ($output);
     }
     else{
-        return NULL;
-    }
-    
-
-
-  
+        $output["fullAddress"] = NULL;
+        $output["lat"]= NULL;
+        $output["long"]= NULL;
+        $output["street"]= NULL;
+        $output["city"]= NULL;
+        $output["state"]= NULL;
+        $output["zip"]= NULL;
+        return $output;
+       
+    } 
 }
-getAddress('LearningFuze Irvine');
+getAddress('LearningFuze irvine');
 
 ?>
 
