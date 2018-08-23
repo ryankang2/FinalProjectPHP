@@ -23,7 +23,7 @@ try {
     //ziprecruiter (working)
     if(preg_match('/ziprecruiter/', $finalUrl) === 1){
         $html = file_get_html($finalUrl);
-        if(!html){
+        if(!$html){
             $output= "Listing is no longer available";
         }
         else{

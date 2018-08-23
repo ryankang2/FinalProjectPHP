@@ -2,10 +2,13 @@
 
 function getDomain($company_name){
     $output;
-    $arr = explode(' ', trim($company_name));
+    // $arr = explode(' ', trim($company_name));
     // $revisedCompanyName = $arr[0];
-   $company_name = urlencode($arr[0].' '.$arr[1]);
-    // print('url encode company name: '.$company_name);
+    $company_name = strtolower($company_name);
+    $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
+   $company_name = urlencode($company_name);
+
+    print('@@@url encode company name: '.$company_name);
 
     $curl = curl_init();
     curl_setopt_array($curl, array(
@@ -31,13 +34,13 @@ function getDomain($company_name){
     // print_r('@response from getDomain call: '.$response); //response from getDomain call: [{"name":"Spectrum","domain":"spectrum.net","logo":"https://logo.clearbit.com/spectrum.net"}
 
     $decoded_response = json_decode($response, true);
-    $company_website= $decoded_response[0]["domain"];
+    $company_website = $decoded_response[0]["domain"];
 
     if(isset($company_website)){
       $output = $company_website;
       return $output;
     } else {
-      return '404 Not Found';   
+      return NULL;   
     }    
     // print_r('@@company_domain:  '.$company_domain);
     // return$company_domain;   
