@@ -3,9 +3,10 @@
     require_once('clearBit.php');
     require_once('scraped_description.php');
     require_once('googlePlace.php');
+    require_once('salary_scrape.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=10&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=2&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
     header('Content-Type: application/json'); // specify data type
@@ -101,11 +102,37 @@
             $result2 = mysqli_query($conn, $query2);
 // add locations query
             $company_id = mysqli_insert_id($conn);
-            $location_query = "INSERT INTO `locations`(`ID`, `street`,`city`,`state`,`lat`,`lng`,`full_address`) VALUES
+            $location_query = "INSERT INTO `locations`(`company_id`, `street`,`city`,`state`,`lat`,`lng`,`full_address`) VALUES
             ('$company_id', '$street','$city','$state','$lat','$long','$fullAddress')";
             $result = mysqli_query($conn, $location_query);
         }
-print('@HELLLL YEAHHH!');
+// Salary:
+
+        //fill up salaries table
+        $titleCity = "$listing_title"."-"."$city";
+        $checkDuplicateSalary = "SELECT `title_city` FROM `salaries` WHERE `title_city`='$titleCity'";
+        mysqli_query($conn, $checkDuplicateSalary);
+        
+        //if salary is not in salaries table, insert salary into it
+        if(mysqli_affected_rows($conn) == 0){
+            $citySalary = (INT)getSalary($listing_title, $city);
+            $stateSalary = (INT)getSalary($listing_title, "");
+            
+            $salaryQuery = "INSERT INTO `salaries`(`city_salary`, `state_salary`, `title_city`)
+            VALUES ($citySalary, $stateSalary, '$titleCity')";
+            $result = mysqli_query($conn, $salaryQuery);
+            if(empty($result)){
+                $output["errors"][] = "failed to query salaries"; 
+                // print('@@@@ ERRORRRRR: '.$output["errors"]);
+            }
+            $salary_id = mysqli_insert_id($conn);
+            // print('@@@ DID IT WORK????');
+            print('@@@titlecity'.$titleCity);
+            print('@@@city'.$citySalary);
+            print('@@@state'.$stateSalary);
+        }
+        
+
 
 // write query to select titles that are repeated
         $checkJobExistance = "SELECT * FROM `jobs` WHERE `title_name` = '$title_name'";
@@ -123,8 +150,8 @@ print('@HELLLL YEAHHH!');
             $company_id = $row["ID"];
 
             $query = "INSERT INTO `jobs`
-            (`title`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `company_name`, `title_name`) 
-            VALUES ('$listing_title', $company_id, '$description', '$post_date', '$listing_url', $type_id, '$company_name', '$title_name')";
+            (`title`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `company_name`, `title_name`, `salary_id`) 
+            VALUES ('$listing_title', $company_id, '$description', '$post_date', '$listing_url', $type_id, '$company_name', '$title_name', '$salary_id')";
             $result = mysqli_query($conn, $query);  
             }
     }
