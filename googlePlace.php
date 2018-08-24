@@ -44,7 +44,7 @@ function getAddress($address_query){
         $output["state"]= $state;
         $output["zip"]= $zip;
         
-        return $output;
+        return($output);
     //    print_r ($output);
     }
     else{
@@ -55,11 +55,11 @@ function getAddress($address_query){
         $output["city"]= NULL;
         $output["state"]= NULL;
         $output["zip"]= NULL;
-        return $output;
+        return($output) ;
        
     } 
 }
-getAddress('LearningFuze irvine');
+getAddress('Primus Global orangecounty');
 
 ?>
 

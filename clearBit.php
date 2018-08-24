@@ -4,9 +4,9 @@ function getDomain($company_name){
     $output;
     // $arr = explode(' ', trim($company_name));
     // $revisedCompanyName = $arr[0];
-    $company_name = strtolower($company_name);
-    $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
-    $company_name = urlencode($company_name);
+    // $company_name = strtolower($company_name);
+    // $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
+    // $company_name = urlencode($company_name);
 
     // print('@@@url encode company name: '.$company_name);
 
@@ -34,11 +34,8 @@ function getDomain($company_name){
     // print_r('@response from getDomain call: '.$response); //response from getDomain call: [{"name":"Spectrum","domain":"spectrum.net","logo":"https://logo.clearbit.com/spectrum.net"}
 
     $decoded_response = json_decode($response, true);
-    $company_website = $decoded_response[0]["domain"];
-
-    if(isset($company_website)){
-      $output = $company_website;
-      return $output;
+    if(isset($decoded_response[0]["domain"])=== true){
+      return $decoded_response[0]["domain"];
     } else {
       return NULL;   
     }    

@@ -5,7 +5,7 @@
     require_once('googlePlace.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=1&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=10&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
     header('Content-Type: application/json'); // specify data type
@@ -49,11 +49,6 @@
             $zip = $addressObject["zip"];
        
         
-
-        
-
-       
-            
         // print_r("
         // -=- Loop Entry $i -=-
         // @title: $title | 
@@ -69,13 +64,20 @@
         // $revisedCompanyName = str_replace(' ', '-', $company_name); 
             
         $ocr_url = "https://www.ocregister.com/?s=".$company_name."&orderby=date&order=desc";
-        $company_website = getDomain($company_name);    
+        $company_website = getDomain($urlEncodedName);    
         $clearbitObject = getClearbitObj($company_website);
-        $linkedin_url= "www.linkedin.com/".$clearbitObject["linkedin"]["handle"];
         // print_r($clearbitObject);
         
+// linkedIn: 
+        if(isset($clearbitObject["linkedin"]["handle"])=== true){
+            $linkedin_url= "www.linkedin.com/".$clearbitObject["linkedin"]["handle"];
+        }
+        else {
+            $linkedin_url = NULL;
+        }
+        
 //logo:
-        if(is_null( $clearbitObject["logo"])=== false){
+        if(isset( $clearbitObject["logo"])=== true){
             $logo = $clearbitObject["logo"];
         }
         else{
@@ -83,8 +85,8 @@
         };
         
 // crunchbase:
-        if(is_null($clearbitObject["crunchbase"]["handle"])===false){
-            $crunchbase = $clearbitObject["crunchbase"]["handle"];
+        if(isset($clearbitObject["crunchbase"]["handle"])===true){
+            $crunchbase = "www.crunchbase.com/".$clearbitObject["crunchbase"]["handle"];
         }
         else{
             $crunchbase = NULL;
@@ -97,12 +99,13 @@
         if(mysqli_num_rows($companyQueryResult) === 0){
             $query2 = "INSERT INTO `companies` (`name`, `company_website`, `linkedIn_url`, `ocr_url`, `logo`,`crunchbase`) VALUES ('$company_name', '$company_website', '$linkedin_url','$ocr_url', '$logo', '$crunchbase')";
             $result2 = mysqli_query($conn, $query2);
-        // add locations query
+// add locations query
             $company_id = mysqli_insert_id($conn);
-            $location_query = "INSERT INTO `locations`(`id`, `street`,`city`,`state`,`lat`,`lng`,`full_address`)) VALUES
+            $location_query = "INSERT INTO `locations`(`ID`, `street`,`city`,`state`,`lat`,`lng`,`full_address`) VALUES
             ('$company_id', '$street','$city','$state','$lat','$long','$fullAddress')";
+            $result = mysqli_query($conn, $location_query);
         }
-
+print('@HELLLL YEAHHH!');
 
 // write query to select titles that are repeated
         $checkJobExistance = "SELECT * FROM `jobs` WHERE `title_name` = '$title_name'";
