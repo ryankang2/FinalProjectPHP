@@ -46,14 +46,8 @@ try {
     } 
     // start wire !!redirects through appcast
     else if(preg_match('/appcast/', $finalUrl)=== 1){
-        $html = file_get_html($finalUrl); // will return false if posting is no longer available
-        if(!$html){
-            $output = "Listing is no longer available";
-        }
-        else {
-            $scrapedData = $html->find('div[class=ua-job-description]', 0);
-            $output = $scrapedData;
-        }
+       return; 
+       
     }
     else {
         $output= "NO DESCRIPTION";
