@@ -12,6 +12,14 @@ include_once("simple_html_dom.php");
         $salary = $salary->innertext;
         $pattern = '/[$,]/';
         $salary = preg_replace($pattern, "", $salary); 
+        $salary = (int)$salary;
+        $salary = round($salary);
+        $salary = (string)$salary;
+        $length = strlen($salary);
+        if($length < 3){
+            $salary = ($salary * 40)*52;
+        }
+
         return $salary;
     }
 

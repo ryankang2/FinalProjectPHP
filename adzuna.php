@@ -6,11 +6,11 @@
     require_once('salary_scrape.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=4&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=5&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
-    header('Content-Type: application/json'); // specify data type
-    $ch = curl_init();                      // initiate request
+    header('Content-Type: application/json');
+    $ch = curl_init();                      
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
@@ -18,7 +18,6 @@
     $server_output = curl_exec ($ch);
     curl_close ($ch);
     $server_output = json_decode($server_output);
-    // echo count((array)$server_output -> results);
     print_r($server_output);
 
     $output = [
@@ -120,13 +119,8 @@
             $salaryInsertQueryResult = mysqli_query($conn, $salaryInsertQuery);
             if(mysqli_affected_rows($conn)=== -1){
                 $output["errors"][] = "failed to query salaries"; 
-                // print('@@@@ ERRORRRRR: '.$output["errors"]);
             }
             $salary_id = mysqli_insert_id($conn);
-            // print('@@@ DID IT WORK????');
-            // print('@@@titlecity'.$titleCity);
-            // print('@@@city'.$citySalary);
-            // print('@@@state'.$stateSalary);
         }
  
 // write query to select titles that are repeated
