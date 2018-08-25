@@ -21,9 +21,8 @@ function getDomain($company_name){
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => "GET",
       CURLOPT_HTTPHEADER => array(
-        "Authorization: Basic c2tfYjUwNDkzMWEzZDNjNjFkNTk3OTIyN2UxMDI4MzFiNGI6",
         "Cache-Control: no-cache",
-        "Postman-Token: 9dea2d17-e13e-4d5a-aef8-ae5d20386a31"
+        "Postman-Token: bf5f42fe-cd0a-4b90-9f63-ec1f45dfefb4"
       ),
     ));
 
@@ -55,9 +54,9 @@ function getClearbitObj($company_website){
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => "GET",
     CURLOPT_HTTPHEADER => array(
-      "Authorization: Basic c2tfYjUwNDkzMWEzZDNjNjFkNTk3OTIyN2UxMDI4MzFiNGI6",
+      "Authorization: Basic c2tfZDViMWJhM2U5NmZjNjhlYTM5YTliNGY4NTkwZDAzN2U6",
       "Cache-Control: no-cache",
-      "Postman-Token: 21083407-2a76-4668-adb5-df062388f3f6"
+      "Postman-Token: ce322dca-91af-424f-b4a5-0afe17756ff2"
     ),
   ));
   

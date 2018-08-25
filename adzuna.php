@@ -6,7 +6,7 @@
     require_once('salary_scrape.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=5&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=2&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
     header('Content-Type: application/json');
@@ -127,7 +127,7 @@
         $checkJobExistance = "SELECT * FROM `jobs` WHERE `title_name` = '$title_name'";
         $jobCheckQueryResult = mysqli_query($conn, $checkJobExistance);
             
-        if(mysqli_num_rows($jobCheckQueryResult)=== 0){ 
+        if(mysqli_num_rows($jobCheckQueryResult)=== 0 && $description !== NULL){ 
 
             $companyIDQuery = "SELECT c.ID FROM companies AS c WHERE c.name = '$company_name'";
             $companySelectQueryResult = mysqli_query($conn, $companyIDQuery);
