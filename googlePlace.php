@@ -59,7 +59,7 @@ function getAddress($address_query){
        
     } 
 }
-getAddress('Primus Global orangecounty');
+// getAddress('Primus Global orangecounty');
 
 ?>
 

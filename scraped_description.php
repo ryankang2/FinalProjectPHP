@@ -51,7 +51,7 @@ try {
        
     }
     else {
-        $output= "NO DESCRIPTION";
+        $output= NULL;
     }
 } catch (Exception $errorr){
     return 'ERROR PULLING THE DESCRIPTION';

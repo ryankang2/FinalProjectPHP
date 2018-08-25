@@ -6,7 +6,7 @@
     require_once('salary_scrape.php');
 
 
-    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=2&what=web%20developer&location0=US&location1=California&location2=Orange%20County";   
+    $url = "https://api.adzuna.com:443/v1/api/jobs/us/search/1?app_id=79a0aa3c&app_key=c80d29a4d0a23378b7b0f66c95e5aaaf&results_per_page=1&what=back%20end%20developer&location0=US&location1=California&location2=Orange%20County";   
 
 //create request object
     header('Content-Type: application/json');
@@ -111,11 +111,13 @@
         if(mysqli_num_rows($salaryCheckQueryResult) === 0){
         //if salary is not in salaries table, insert salary into it
     
-            $citySalary = (INT)getSalary($listing_title, $city);
-            $stateSalary = (INT)getSalary($listing_title, "");
-            
-            $salaryInsertQuery = "INSERT INTO `salaries`(`city_salary`, `state_salary`, `title_city`)
-            VALUES ($citySalary, $stateSalary, '$titleCity')";
+            $citySalary = (INT)getSalary($title, $city, false);
+            $stateSalary = (INT)getSalary($title, false, false);
+            $nationalSalary = (INT)getSalary($title, false, true);
+
+
+            $salaryInsertQuery = "INSERT INTO `salaries`(`city_salary`, `state_salary`, `title_city`, `national_salary`)
+            VALUES ($citySalary, $stateSalary, '$titleCity', $nationalSalary)";
             $salaryInsertQueryResult = mysqli_query($conn, $salaryInsertQuery);
             if(mysqli_affected_rows($conn)=== -1){
                 $output["errors"][] = "failed to query salaries"; 
@@ -141,8 +143,13 @@
             VALUES ('$listing_title', $company_id, '$description', '$post_date', '$listing_url', $type_id, '$company_name', '$title_name', $salary_id)";
             $jobsInsertQueryResult = mysqli_query($conn, $jobsInsertQuery);  
                 if(mysqli_affected_rows($conn)=== -1){
-                    $output['error'][]= "## Jobs insert query error";
-                }
+                    if($description === null){
+                        $output['error'][]= "## Jobs description is unavailable, did not insert job";
+                    }
+                    else {
+                        $output['error'][]= "## Jobs insert query error";
+                    }   
+                } 
             }
     }
     print_r($output);
@@ -151,7 +158,7 @@
 
     function encodeName($company_name){
         $company_name = strtolower($company_name);
-        $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|\.|\,)/','', $company_name);
+        $company_name = preg_replace('/(corporation|usa|inc|connection|llc|america|services|corp|solutions|research|company|orange county|\.|\,)/','', $company_name);
         return urlencode($company_name);
     };
 
