@@ -1,0 +1,33 @@
+
+	"data": [{
+		"id": "423",
+		"title": "Mid Level Developer",
+		"company_name": "Csra",
+		"company": {
+			"name": "Csra",
+			"logo": "https:\/\/logo.clearbit.com\/csrankings.org",
+			"company_website": "csrankings.org",
+			"linkedin_url": "https:\/\/www.linkedin.com\/",
+			"ocr_url": "https:\/\/www.ocregister.com\/?s=Csra&orderby=date&order=desc",
+			"crunchbase_url": "https:\/\/www.crunchbase.com\/",	
+		},
+		"post_date": "07\/31\/2018",
+		"listing_url": "https:\/\/us.jooble.org\/desc\/7388932395820110292?ckey=web+developer&rgn=6974&pos=21&elckey=-7734520866794979144&age=542&relb=100&brelb=100&bscr=271,17365&scr=271,17365",
+		"type_id": "1",
+		"description": "<div class=\"vacancy-desc_text_wrapper\">  \t\t\t\t\t<div class=\"desc_text_paragraph\">  <p><u><b> Clearance Level Must Currently Possess: <\/b><\/u><\/p> No Active Clearance Required <p><\/p><p><\/p><p><u><b> Clearance Level Must Be Able to Obtain: <\/b><\/u><\/p> Secret <p><\/p><p><\/p><p><u><b> Suitability: <\/b><\/u><\/p> No Suitability Required <p><\/p><p><\/p><p><u><b> Job Family: <\/b><\/u><\/p> Information Technology <p><\/p><p><\/p><p><u><b> Job Description: <\/b><\/u><\/p><p> CSRA is actively seeking a Software Developer Associate to support the Naval Surface Warfare Center (NSWC) Corona Division Acquisition and Readiness Assessment Division at Norco, CA. <\/p><p>- Develops web-based applications from end-to-end in a fast-paced Agile environment. <\/p><p>- Develops full-stack web applications in a technical environment. <\/p><p>- Designs, codes, tests new solutions for a new global B2B platform. <\/p><p><br> DESIRED QUALIFICATIONS: BS or equivalent + 0 yrs experience <\/p><p><\/p><p>1+ years of ASP.NET MVC development and the C# language. <\/p><p>•1+ years of HTML, CSS and Javascript. Must include HTML5 and CSS3<\/p><p>• Experience delivering digital marketing sites and applications with responsive and adaptive web design <\/p><p>• Experience in software design concepts such as separation of concerns, microservices and SOA <\/p><p>• Knowledge of client server environment, three tier environment and N-tier environments. <\/p><p>• Experience with front end JavaScript frameworks like Bootstrap, AngularJs, React and Knockout <\/p><p>• Experience building and consuming REST web services <\/p><p>• Knowledge and understanding of relational database <\/p><p>• Working knowledge of XML\/JSON and using 3rd party API’s. <\/p><p>• Experience building integrations between independent systems, services and data sources <\/p><p>• Experience with object oriented design, software patterns, and refactoring <\/p><p>• Experience writing unit and integration test case <\/p><p>• Experience with application security and user authentication <\/p><p>• Good knowledge of architectural considerations for B2B web sites like scalability, availability, CDNs, Azure\/cloud deployment <\/p><p>• Experience working in an Agile environment <\/p><p><\/p><p><\/p><p><u><b># of Openings: <\/b><\/u><\/p>1<p><\/p><p><\/p><p><u><b> Scheduled Weekly Hours: <\/b><\/u><\/p>40<p><\/p><p><\/p><p><u> T <b> elecommuting Options: <\/b><\/u><\/p> Some Telecommuting Allowed <p><\/p><p><\/p><p><u><b> Work Location: <\/b><\/u><\/p> USA CA Norco - 2727 Hamner Ave (CAS008)<p><\/p><p><\/p><p><u><b> Additional Work Locations: <\/b><\/u><\/p><p><\/p><p><\/p><p><b><i> CSRA is committed to creating a diverse environment and is an equal opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, gender, gender identity or expression, sexual orientation, national origin, genetics, disability, age, or veteran status. <\/i><\/b><\/p>\t\t\t\t\t<\/div>  \t\t\t\t<\/div>",
+		"title_comp": "Mid Level Developer-Csra",
+		"salary": {
+			"city_salary": "50860",
+			"us_salary": "53635",
+			"title_city": "Mid Level Developer-Norco"
+		},
+		"location": {
+			"street": "2727 Hamner Ave",
+			"city": "Norco",
+			"state": "CA",
+			"zip": "92860",
+			"lat": "33.9214024",
+			"lng": "-117.5587949",
+			"full_address": "2727 Hamner Ave, Norco, CA 92860, USA",
+		},
+	}]
