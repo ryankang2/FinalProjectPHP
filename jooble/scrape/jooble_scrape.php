@@ -42,8 +42,6 @@
         }
     }
 
-    // getplaintextintrofromhtml("https://us.jooble.org/jdp/-3760178809516879431/Software-Engineer-San-Diego%2c-CA?ckey=software&rgn=7416&pos=30&elckey=-6130813203004138537&age=16&relb=100&brelb=100&bscr=497,59338&scr=497,59338");
-
 
 
 ?>

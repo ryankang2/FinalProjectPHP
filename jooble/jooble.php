@@ -14,7 +14,7 @@ $ch = curl_init();
 header('Content-Type: application/json');
 curl_setopt($ch, CURLOPT_URL, $url."".$key);
 curl_setopt($ch, CURLOPT_POST, 1);
-curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "keywords": "software", "location": "Irvine", "radius":"25", "page": 1}');
+curl_setopt($ch, CURLOPT_POSTFIELDS, '{ "keywords": "web%20development", "location": "Irvine", "radius":"25", "page": 1}');
 curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
 // receive server response ...
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -28,7 +28,7 @@ print_r($server_output);
 
 
 for($i = 0; $i < count((array)$server_output->jobs); $i++){
-    if($i === 1){
+    if($i === 3){
         break;
     }
     $title = $server_output->jobs[$i]->title;
@@ -41,6 +41,8 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
     $city = preg_replace("/, CA/", "", $location);
     $revisedCompanyName = cleanCompanyName($companyName);
     $companySite = getCompanySite($revisedCompanyName);
+    $revisedCompanyName = str_replace(" ", "", $revisedCompanyName);
+    $revisedCompanyName = str_replace(",", "", $revisedCompanyName);
     //check if company site is invalid, if so, give it a .com concat
     $companySite = ($companySite==NULL) ? ($revisedCompanyName).".com":$companySite;
 
@@ -93,6 +95,7 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
         }
         $salary_id = mysqli_insert_id($conn);
     }
+
     //skip appcast.io -> cant scape description
     if($server_output->jobs[$i]->source === "appcast.io"){
        continue;
@@ -108,6 +111,9 @@ for($i = 0; $i < count((array)$server_output->jobs); $i++){
         $result = mysqli_query($conn, $companyIDQuery);
         $row = mysqli_fetch_assoc($result);
         $company_id = $row["ID"];
+        if($description == "No description available"){
+            continue;
+        }
         $query = "INSERT INTO `jobs`(`title`, `company_name`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `title_comp`, `salary_id`) 
         VALUES ('$title', '$companyName', $company_id, '$description', '$postDate', '$link', $type, '$titleCompany', $salary_id)";
         //send the query to the database, store the result of the query into $result
