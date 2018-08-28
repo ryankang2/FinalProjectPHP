@@ -36,22 +36,14 @@
         $post_date    = getPostDate($currentResultIndex->created);
         $listing_url  = getListingURL($currentResultIndex);
         $type_id = getJobType($currentResultIndex);
-        
         $urlEncodedName= encodeName($company_name);
-        // print('@@@@URL ENCODED '.$urlEncodedName);
+       
         
-        $description = scrapeDescription($listing_url);
+       
         $city = $currentResultIndex-> location->area[3];
         $address_query = $urlEncodedName." ".$city;
         
-        $addressObject = getAddress($address_query);
-            $fullAddress = $addressObject["fullAddress"];
-            $lat = $addressObject["lat"];
-            $long = $addressObject["long"];
-            $street = $addressObject["street"];
-            $city = $addressObject["city"];
-            $state = $addressObject["state"];
-            $zip = $addressObject["zip"]; 
+        
             
         $ocr_url = "https://www.ocregister.com/?s=".$company_name."&orderby=date&order=desc";
         $company_website = getDomain($urlEncodedName);    
@@ -93,6 +85,15 @@
                 $output['error'][]= "## Company insert query error";
             }
 // add locations query
+            $addressObject = getAddress($address_query);
+            $fullAddress = $addressObject["fullAddress"];
+            $lat = $addressObject["lat"];
+            $long = $addressObject["long"];
+            $street = $addressObject["street"];
+            $city = $addressObject["city"];
+            $state = $addressObject["state"];
+            $zip = $addressObject["zip"]; 
+
             $company_id = mysqli_insert_id($conn);
             $location_query = "INSERT INTO `locations`(`company_id`, `street`,`city`,`state`,`lat`,`lng`,`full_address`) VALUES
             ($company_id, '$street','$city','$state','$lat','$long','$fullAddress')";
@@ -133,11 +134,10 @@
 
             $companyIDQuery = "SELECT c.ID FROM companies AS c WHERE c.name = '$company_name'";
             $companySelectQueryResult = mysqli_query($conn, $companyIDQuery);
-            
-    
             $row = mysqli_fetch_assoc($companySelectQueryResult);
             $company_id = $row["ID"];
-
+            $description = scrapeDescription($listing_url);
+            
             $jobsInsertQuery = "INSERT INTO `jobs`
             (`title`, `company_id`, `description`, `post_date`, `listing_url`, `type_id`, `company_name`, `title_name`, `salary_id`) 
             VALUES ('$listing_title', $company_id, '$description', '$post_date', '$listing_url', $type_id, '$company_name', '$title_name', $salary_id)";
@@ -153,7 +153,7 @@
             }
     }
     print_r($output);
-//----------------------------------------------------------------------------------------------------------------------------//
+//------------------------------------------------------------------------------------------------------------------//
     
 
     function encodeName($company_name){

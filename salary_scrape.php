@@ -3,8 +3,7 @@
         $spacePattern = '/[ ]/';
         $title = preg_replace($spacePattern, "-", $title);
         $city = preg_replace($spacePattern, "-", $city);
-        // $url = ($city === "") ? "https://www.indeed.com/salaries/$title"."-Salaries,-California" : 
-        //                         "https://www.indeed.com/salaries/$title"."-Salaries,-"."$city"."-CA";
+        
         if(!$city && !$country){
             $url = "https://www.indeed.com/salaries/$title"."-Salaries,-California";
         }

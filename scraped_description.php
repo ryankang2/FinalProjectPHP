@@ -53,7 +53,7 @@ try {
     else {
         $output= NULL;
     }
-} catch (Exception $errorr){
+} catch (Exception $error){
     return 'ERROR PULLING THE DESCRIPTION';
 }
 
